@@ -1,0 +1,3 @@
+SpeechRecognition
+pillow
+python-tk

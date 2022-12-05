@@ -1,0 +1,126 @@
+Robot Setup:
+//change IP on router
+//Login to robot
+sudo vi /etc/robotname/env.sh
+//change TP address
+//press ESC
+//shift+ Z,Z
+//chnage IP on server side
+vi.bashrc
+//change IP address
+//press ESE
+// shift +Z,Z
+
+---------------------------------------------------------------------------------------------------------------------------
+//first need to stop navigation process on robot
+login to robot:
+ps -e //to see the robot process
+//see rosmaster process id
+kill 'rosmaster process id'
+
+
+
+mapping process
+
+roslaunch club_first_xena robot_config.launch  //-robot side
+slam launchin:
+roslaunch club_first_xena slam.launch  //-laptop  rviz start with keyboard
+
+
+map savingrviz
+rosrun map_server map_saver -f lab_new  //laptop side
+
+
+to upload map to robot
+scp ./lab_new* ubuntu@192.168.1.113:/home/ubuntu/catkin_ws/src/club_first_xena/maps/
+
+vi catkin_ws/src/club_first_xena/launch/xena.launch   //to start navigation process again
+
+rostopic echo /robot2/move_base_simple/goal     //to see goal
+
+Change Mape resulation: Laptop Side Slam.launch /// Robot Side xena.launch 
+
+
+--------------------------------------------------------------------------------------------------------------------------
+To set goals to robot:
+//if net not available chage time on robot
+LOGIN TO ROBOT:
+sudo date -s "9 NOV 2019 16:18:00"   //TO SET DATE
+date // to check date
+vi catkin_ws/src/club_first_xena/src/robot_controller.cpp   //to edit goals put x,y,z,w
+cd catkin_ws
+catkin_make robot_controller  //compile goals 100% process
+Robot pose:
+ vi catkin_ws/src/club_first_xena/launch/amcl_diff1.launch 
+
+cd catkin_ws/club_first_xena/src/rm ./*   //to delete all source files
+--------------------------------------------------------------------------------------------------------------------------
+Robo Pose:
+login to robot:club_first_xena/launch/amcl_diff1.launch
+
+x=55.78  Y=67.99  A=-1.78
+
+------------------------------------
+ rostopic echo /robot2/gyro
+ rostopic echo /robot2/rpm
+
+---------------------------------
+Send file to Robot:
+scp filename ubuntu@192.168.1.113:/home/ubuntu
+//enter password
+
+----------------------------------
+Login to Robot:
+ssh ubuntu@192.168.1.113
+//enter password
+
+----------------------------------
+Power Off & reboot:
+//login to robot
+sudo poweroff
+sudo reboot
+-----------------------------------
+Change Audio:
+//go to file folder right click & open terminal
+scp greet.wav ubuntu@192.168.1.111:/home/ubuntu/goal_recieved.wav
+
+//
+welcome.wav  //start robot
+greet.wav    //greet
+goal_complete.wav  //goal achieved
+goal_received.wav   //goal received
+dock.wav        //to dock
+cancel.wav     // cancle the goal
+
+-------------------------------------------
+Keyboard Run:
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py cmd_vel:=/robot2/cmd_vel/out
+
+-----------------------------------------------------------------------------------
+Goal ADD:
+GOAL1
+GREET
+DOCK
+CANCEL
+
+
+
+scp ./robot_controller.cpp ubuntu@192.168.0.107:/home/ubuntu/catkin_ws/src/my_personal_robotic_companion/src/
+
+
+-------------------------------------------------
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+source /opt/ros/kinetic/setup.bash
+source /home/club/catkin_ws/devel/setup.bash
+export ROS_MASTER_URI=http://192.168.31.10:11311
+export ROS_IP=192.168.31.10
+export ROS_HOSTNAME=$(hostname).local
